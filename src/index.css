@@ -1,0 +1,34 @@
+@import "tailwindcss";
+
+@theme inline {
+  --animate-cell-ripple: cell-ripple var(--duration, 200ms) ease-out none 1 var(--delay, 0ms);
+
+  @keyframes cell-ripple {
+    0% {
+      opacity: 0.4;
+    }
+
+    50% {
+      opacity: 0.8;
+    }
+
+    100% {
+      opacity: 0.4;
+    }
+  }
+}
+
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+button {
+  cursor: pointer !important;
+}

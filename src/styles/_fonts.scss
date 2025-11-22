@@ -1,0 +1,13 @@
+
+@font-face {
+  font-family: 'CustomFont';
+  src: url('./assets/fonts/myfont.woff2') format('woff2'),
+    url('./assets/fonts/myfont.woff') format('woff'),
+    url('./assets/fonts/myfont.ttf') format('truetype'),
+    url('./assets/fonts/myfont.svg#CustomFont') format('svg'),
+    url('./assets/fonts/myfont.eot');
+  /* fallback for IE */
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
