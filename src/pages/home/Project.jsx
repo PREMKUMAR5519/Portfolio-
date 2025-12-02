@@ -5,9 +5,11 @@ function Project() {
     const [showMore, setShowMore] = useState(false)
     return (
         <div className='home-project-main'>
-            <div className='more-container'>
+            {showMore && (
+                <div className='more-container'>
 
-            </div>
+                </div>
+            )}
             <div className='headings-main'>
                 <h5>Projects</h5>
                 <h6>All over my details find here</h6>
