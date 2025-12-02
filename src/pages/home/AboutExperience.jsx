@@ -41,7 +41,7 @@ function AboutExperience() {
                     <h5>Full Stack Developer</h5>
                     <h6>
                         <span><CiCalendar /></span>
-                        2025 - Present
+                        Apr 2024 - Dec 2024
                     </h6>
                     <p>
                         Worked as a Full Stack developer at Dragon Sino Group, a Chinese company
