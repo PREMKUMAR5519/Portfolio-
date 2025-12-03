@@ -31,7 +31,7 @@ function Project() {
             image: "/assets/images/projects/arts.png",
             url: "arts.smvec.ac.in",
             repo: "#",
-            live: "#"
+            live: "https://arts.smvec.ac.in"
         },
         {
             name: "E-Commerce Concepts",
@@ -40,7 +40,7 @@ function Project() {
             image: "/assets/images/projects/law.png",
             url: "law.smvec.ac.in",
             repo: "#",
-            live: "#"
+            live: "https://law.smvec.ac.in"
         },
         {
             name: "Analytics Dashboard",
@@ -49,7 +49,7 @@ function Project() {
             image: "/assets/images/projects/media.png",
             url: "media.smvec.ac.in",
             repo: "#",
-            live: "#"
+            live: "https://media.smvec.ac.in"
         },
         {
             name: "Landing Page Lab",
@@ -58,7 +58,7 @@ function Project() {
             image: "/assets/images/projects/agri.png",
             url: "agri.smvec.ac.in",
             repo: "#",
-            live: "#"
+            live: "https://agri.smvec.ac.in"
         },
 
     ]
@@ -174,7 +174,6 @@ function Project() {
                                         </div>
                                     </div>
                                 </div>
-
                             </div>
                         ))}
                     </div>
