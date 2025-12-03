@@ -1,6 +1,138 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { TfiWorld } from "react-icons/tfi";
 
+function CardParticleField({ active, targetRect }) {
+    const canvasRef = useRef(null)
+    const particlesRef = useRef([])
+    const animationRef = useRef(null)
+    const sizeRef = useRef({ w: 0, h: 0 })
+
+    useEffect(() => {
+        const canvas = canvasRef.current
+        if (!canvas || !canvas.parentElement) return
+        const ctx = canvas.getContext('2d')
+
+        const NUM = 200
+        const SPEED = 0.08
+
+        const resize = () => {
+            const rect = canvas.parentElement.getBoundingClientRect()
+            canvas.width = rect.width
+            canvas.height = rect.height
+            sizeRef.current = { w: rect.width, h: rect.height }
+            initParticles()
+            applyTargetRing()
+        }
+
+        const initParticles = () => {
+            const { w, h } = sizeRef.current
+            particlesRef.current = Array.from({ length: NUM }, () => {
+                const x = Math.random() * w
+                const y = Math.random() * h
+                return {
+                    x,
+                    y,
+                    baseX: x,
+                    baseY: y,
+                    tx: x,
+                    ty: y
+                }
+            })
+        }
+
+        const applyTargetRing = () => {
+            if (!targetRect) return
+            const { x, y, width, height } = targetRect
+            const margin = 24
+            const ringCount = Math.min(90, particlesRef.current.length)
+
+            for (let i = 0; i < ringCount; i++) {
+                const p = particlesRef.current[i]
+                const side = Math.floor(Math.random() * 4)
+                let tx = p.baseX
+                let ty = p.baseY
+
+                if (side === 0) {
+                    tx = x + Math.random() * width
+                    ty = y - margin - Math.random() * 12
+                } else if (side === 1) {
+                    tx = x + width + margin + Math.random() * 12
+                    ty = y + Math.random() * height
+                } else if (side === 2) {
+                    tx = x + Math.random() * width
+                    ty = y + height + margin + Math.random() * 12
+                } else {
+                    tx = x - margin - Math.random() * 12
+                    ty = y + Math.random() * height
+                }
+
+                p.tx = tx
+                p.ty = ty
+            }
+        }
+
+        const tick = () => {
+            const { w, h } = sizeRef.current
+            ctx.clearRect(0, 0, w, h)
+            particlesRef.current.forEach((p, idx) => {
+                const targetX = active && idx < 90 && targetRect ? p.tx : p.baseX
+                const targetY = active && idx < 90 && targetRect ? p.ty : p.baseY
+                p.x += (targetX - p.x) * SPEED
+                p.y += (targetY - p.y) * SPEED
+
+                ctx.beginPath()
+                ctx.arc(p.x, p.y, 1.1, 0, Math.PI * 2)
+                ctx.fillStyle = active ? 'rgba(0,0,0,0.38)' : 'rgba(0,0,0,0.18)'
+                ctx.fill()
+            })
+            animationRef.current = requestAnimationFrame(tick)
+        }
+
+        resize()
+        tick()
+        const resizeObserver = new ResizeObserver(resize)
+        resizeObserver.observe(canvas.parentElement)
+
+        return () => {
+            cancelAnimationFrame(animationRef.current)
+            resizeObserver.disconnect()
+        }
+    }, [active, targetRect])
+
+    useEffect(() => {
+        if (!targetRect || !particlesRef.current.length) return
+        const { x, y, width, height } = targetRect
+        const margin = 24
+        const ringCount = Math.min(90, particlesRef.current.length)
+
+        for (let i = 0; i < ringCount; i++) {
+            const p = particlesRef.current[i]
+            const side = Math.floor(Math.random() * 4)
+            let tx = p.baseX
+            let ty = p.baseY
+
+            if (side === 0) {
+                tx = x + Math.random() * width
+                ty = y - margin - Math.random() * 12
+            } else if (side === 1) {
+                tx = x + width + margin + Math.random() * 12
+                ty = y + Math.random() * height
+            } else if (side === 2) {
+                tx = x + Math.random() * width
+                ty = y + height + margin + Math.random() * 12
+            } else {
+                tx = x - margin - Math.random() * 12
+                ty = y + Math.random() * height
+            }
+
+            p.tx = tx
+            p.ty = ty
+        }
+    }, [targetRect])
+
+    return <canvas ref={canvasRef} className='project-particles' />
+}
+
 function Project() {
     const ProjectData = [
         {
@@ -10,13 +142,13 @@ function Project() {
             image: "/assets/images/projects/aiignite.png"
         },
         {
-            name: "GEN - AI HACKATHON",
+            name: "SMV Super Speciality",
             desc: "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing packages and web",
             tags: ["Frontend", "Supabase", "React", "UI/UX"],
             image: "/assets/images/projects/smvhospitals.png"
         },
         {
-            name: "GEN - AI HACKATHON",
+            name: "Takshashila Medical college",
             desc: "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing packages and web",
             tags: ["Frontend", "Supabase", "React", "UI/UX"],
             image: "/assets/images/projects/takshashila.png"
@@ -63,7 +195,10 @@ function Project() {
        
     ]
     const [showMore, setShowMore] = useState(false)
+    const [hoverIndex, setHoverIndex] = useState(-1)
+    const [hoverRect, setHoverRect] = useState(null)
     const cardRefs = useRef([])
+    const imageRefs = useRef([])
 
     useEffect(() => {
         const observer = new IntersectionObserver(
@@ -93,7 +228,7 @@ function Project() {
     return (
         <div className='home-project-main'>
             {showMore && (
-                <div className='more-container' onClick={handleOverlayClick}>
+                <div className={`more-container ${showMore ? 'active' : ''}`} onClick={handleOverlayClick}>
                     <div className='more-content' onClick={(e) => e.stopPropagation()}>
                         <div className='more-header'>
                             <div>
@@ -154,7 +289,31 @@ function Project() {
                 <h6>All over my details find here</h6>
             </div>
             {ProjectData.map((project, i) => (
-                <div className='projects-card' ref={(el) => (cardRefs.current[i] = el)}>
+                <div
+                    className='projects-card'
+                    ref={(el) => (cardRefs.current[i] = el)}
+                    onMouseEnter={() => {
+                        setHoverIndex(i)
+                        const imgEl = imageRefs.current[i]
+                        const cardEl = cardRefs.current[i]
+                        if (imgEl && cardEl) {
+                            const imgRect = imgEl.getBoundingClientRect()
+                            const cardRect = cardEl.getBoundingClientRect()
+                            setHoverRect({
+                                x: imgRect.left - cardRect.left,
+                                y: imgRect.top - cardRect.top,
+                                width: imgRect.width,
+                                height: imgRect.height
+                            })
+                        }
+                    }}
+                    onMouseLeave={() => {
+                        setHoverIndex(-1)
+                        setHoverRect(null)
+                    }}
+                    key={project.name}
+                >
+                    <CardParticleField active={hoverIndex === i} targetRect={hoverRect} />
                     <div className='left'>
                         <h3>{project.name}</h3>
                         <p>{project.desc}</p>
@@ -166,7 +325,9 @@ function Project() {
                         </div>
                     </div>
                     <div className='right'>
-                        <img src={project.image} alt="" />
+                        <div className='project-media' ref={(el) => (imageRefs.current[i] = el)}>
+                            <img src={project.image} alt={project.name} />
+                        </div>
                     </div>
                 </div>
             ))}
