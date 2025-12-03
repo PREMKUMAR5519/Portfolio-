@@ -3,7 +3,7 @@ import React from 'react'
 function AboutMe() {
     return (
         <div className='aboutme-main'>
-            <p> Prem Kumar, Full-stack Website Developer
+            <p><span className='highlight'> Prem Kumar, </span><span className='highlightwo'>Full-stack Website Developer</span>
 
                 <br />
 
