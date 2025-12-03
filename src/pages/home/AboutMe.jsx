@@ -3,10 +3,12 @@ import React from 'react'
 function AboutMe() {
     return (
         <div className='aboutme-main'>
-            <p> Prem Kumar, MERN Stack Developer.
+            <p> Prem Kumar, Full-stack Website Developer
 
                 <br />
-                A builder of digital experiences, a shaper of seamless interfaces, and an architect of scalable backend systems. I craft products that reflect your vision, solve real problems, and deliver performance that truly matters. My code speaks clarity, my designs speak purpose, and my work is built to make people want to stay, explore, and return.</p>
+
+                Specializing in building fast, modern, and user-centric web applications. With strong expertise in ReactJS, FastAPI, and cloud deployments, I create seamless digital experiences that are clean, scalable, and performance-driven. I combine technical development with creative problem-solving, working end-to-end across UI/UX, backend architecture, and deployment workflows to deliver reliable, production-ready solutions. Passionate about technology, design, and innovation, I focus on turning ideas into polished, impactful digital products.
+            </p>
 
             <div className='personal-details'>
                 <div className='rows'>

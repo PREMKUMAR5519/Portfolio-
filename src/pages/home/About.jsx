@@ -3,6 +3,7 @@ import { ArrowUpRight } from 'lucide-react'
 import AboutMe from './AboutMe'
 import AboutExperience from './AboutExperience'
 import AboutSkills from './AboutSkills'
+import AboutEducation from './AboutEducation'
 
 function About() {
     const [currentAbout, setCurrentAbout] = useState(0)
@@ -27,6 +28,7 @@ function About() {
                 <div className='right'>
                     {currentAbout === 0 && <AboutMe />}
                     {currentAbout === 1 && <AboutExperience />}
+                    {currentAbout === 2 && <AboutEducation />}
                     {currentAbout === 3 && <AboutSkills />}
                 </div>
             </div>

@@ -536,20 +536,6 @@
         padding-bottom: 40px;
         margin-bottom: 40px;
         overflow: visible;
-        position: relative;
-
-        .project-particles {
-            position: absolute;
-            inset: 0;
-            pointer-events: none;
-            z-index: 0;
-            mix-blend-mode: multiply;
-        }
-
-        >* {
-            position: relative;
-            z-index: 1;
-        }
 
         .left,
         .right {
@@ -658,7 +644,6 @@
 
         .right {
             padding: 10px 0 10px 50px;
-            position: relative;
 
             img {
                 width: 100%;
@@ -666,31 +651,6 @@
                 object-fit: cover;
                 object-position: top;
                 border-radius: 10px;
-            }
-
-            .project-media {
-                position: relative;
-                width: 100%;
-                height: 100%;
-                border-radius: 12px;
-                overflow: hidden;
-                background: #f7f7f7;
-                border: 1px solid rgba(0, 0, 0, 0.04);
-                box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4);
-
-                img {
-                    width: 100%;
-                    height: 100%;
-                    object-fit: cover;
-                    display: block;
-                }
-
-                .project-particles {
-                    position: absolute;
-                    inset: 0;
-                    pointer-events: none;
-                    mix-blend-mode: multiply;
-                }
             }
         }
     }
@@ -706,35 +666,25 @@
     }
 
     .more-container {
-        position: fixed;
-        width: 100%;
-        height: 100vh;
-        perspective: 1000px;
         // background: rgba(18, 18, 18, 0.082);
-        background-color: rgba(255, 255, 255, 0.637);
         overflow: hidden;
-
-        transform: translate(-50%, -50%);
-        backdrop-filter: blur(15px);
-        z-index: 1000;
         padding: 0;
         display: flex;
         align-items: center;
         justify-content: center;
+        transition: all 0.3s ease-in-out;
+        height: 0;
 
         &.active {
             animation: whileenter 0.2s ease forwards;
+            height: 750px;
         }
 
         .more-content {
-            background-color: rgba(0, 0, 0, 0.096);
-            width: 90%;
-            height: 90%;
             // background: linear-gradient(160deg, #e7dfc9 0%, #ffffff 45%, #e9e9e9 100%);
             border-radius: 16px;
             // background-color: #ebebeb;
-            box-shadow: 0 16px 34px rgba(0, 0, 0, 0.075);
-            padding: 24px;
+          
             overflow: auto;
             display: flex;
             flex-direction: column;
@@ -789,7 +739,8 @@
         }
 
         .more-grid {
-            display: flex;
+            display: grid;
+            grid-template-columns: repeat(3,1fr);
             flex-wrap: wrap;
             gap: 16px;
 
@@ -804,7 +755,6 @@
             transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease, background-color 0.2s ease;
             position: relative;
             cursor: pointer;
-            width: 450px;
             padding: 0 0 5px 0;
             gap: 5px;
 
