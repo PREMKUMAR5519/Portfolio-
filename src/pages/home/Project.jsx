@@ -62,7 +62,7 @@ function Project() {
         },
 
     ]
-    const [showMore, setShowMore] = useState(false)
+    const [showMore, setShowMore] = useState(true)
     const cardRefs = useRef([])
     const moreRef = useRef(null)
 
