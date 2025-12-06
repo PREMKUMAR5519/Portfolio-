@@ -28,6 +28,8 @@ function AboutSkills() {
     const [currentValue, setCurrentValue] = useState('')
     return (
         <div className='About-skills'>
+            <h3 className="about-skills-heading">My Skills</h3>
+
             <div className='top-skills'>
                 {topSkills?.map((skill, i) => <div onMouseEnter={() => { setCurrentValue(skill) }} onMouseLeave={() => setCurrentValue("")} key={i} className='skills'>{skill}</div>)}
             </div>

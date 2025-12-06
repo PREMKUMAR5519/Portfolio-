@@ -7,19 +7,23 @@ function Project() {
             name: "GEN - AI HACKATHON",
             desc: "I developed the complete digital ecosystem for AI IGNITE, a national-level AI hackathon with multi-stage participation. The platform includes secure authentication, dynamic team creation, invite links, mentor booking, and admin dashboards. I also designed all event visuals — banners, standees, UI layouts, and AI-driven creative assets. The system is fully scalable, performance-optimized, and supports participants from across India. This project showcases my ability to build end-to-end, production-ready event management platforms.",
             tags: ["Frontend", "Supabase", "React", "UI/UX"],
-            image: "/assets/images/projects/aiignite.png"
+            image: "/assets/images/projects/aiignite.png",
+            url: "aiignite.smvec.ac.in",
+            live: "https://aiignite.smvec.ac.in",
         },
         {
             name: "SMV Super Speciality",
             desc: "I created a modern, clean, and trust-driven website for SMV Super Speciality Hospital, focusing on clarity, accessibility, and patient experience. The site features structured pages for departments, doctors, treatments, and service workflows. The UI follows a calm medical theme with responsive layouts across all devices. Backend architecture was planned for future integrations like appointment booking and digital records. This project highlights my capability in developing professional healthcare web platforms.",
             tags: ["Frontend", "Supabase", "React", "UI/UX"],
-            image: "/assets/images/projects/smvhospitals.png"
+            image: "/assets/images/projects/smvhospitals.png",
+            live: "https://smvhospitals.com"
         },
         {
             name: "Takshashila Medical college",
             desc: "I built the complete web presence for Takshashila Medical College, crafting a premium academic interface that reflects credibility and medical excellence. The website includes admissions details, program structure, faculty listings, laboratories, and infrastructure highlights. The design maintains a modern medical aesthetic with smooth navigation and optimized performance. The site is structured for future CMS expansion and content scalability. This project demonstrates my skill in academic branding, UI design, and full-stack web execution.",
             tags: ["Frontend", "Supabase", "React", "UI/UX"],
-            image: "/assets/images/projects/takshashila.png"
+            image: "/assets/images/projects/takshashila.png",
+            live: "https://takshashilamedicalcollege.com"
         },
     ]
 
@@ -62,29 +66,33 @@ function Project() {
         },
 
     ]
-    const [showMore, setShowMore] = useState(true)
+    const [showMore, setShowMore] = useState(false)
     const cardRefs = useRef([])
     const moreRef = useRef(null)
 
     useEffect(() => {
+        const isMobile = window.innerWidth <= 768; // or use any breakpoint you prefer
+        const thresholdValue = isMobile ? 0.35 : 0.75;
+
         const observer = new IntersectionObserver(
             (entries) => {
                 entries.forEach((entry) => {
                     if (entry.isIntersecting) {
-                        entry.target.classList.add('is-visible')
-                        observer.unobserve(entry.target)
+                        entry.target.classList.add('is-visible');
+                        observer.unobserve(entry.target);
                     }
-                })
+                });
             },
-            { threshold: 0.75, rootMargin: '0px 0px -50px 0px' }
-        )
+            { threshold: thresholdValue, rootMargin: '0px 0px -50px 0px' }
+        );
 
         cardRefs.current.forEach((card) => {
-            if (card) observer.observe(card)
-        })
+            if (card) observer.observe(card);
+        });
 
-        return () => observer.disconnect()
-    }, [])
+        return () => observer.disconnect();
+    }, []);
+
 
     useEffect(() => {
         if (showMore && moreRef.current) {
@@ -97,7 +105,7 @@ function Project() {
     }, [showMore])
 
     const handleOverlayClick = (e) => {
-        if (e.target.classList.contains('more-container')) {
+        if (e.target.classList.contains('more- ')) {
             setShowMore(false)
         }
     }
@@ -120,7 +128,7 @@ function Project() {
 
                         </div>
                     </div>
-                    <div className='right'>
+                    <div className='right' onClick={() => { window.open(project.live, '_blank') }}>
                         <img src={project.image} alt="" />
                     </div>
                 </div>

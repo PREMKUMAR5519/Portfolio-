@@ -7,14 +7,14 @@ import AboutEducation from './AboutEducation'
 
 function About() {
     const [currentAbout, setCurrentAbout] = useState(0)
-    
+
     function handleChangestate(val) {
         setCurrentAbout(val)
     }
 
     return (
         <div className='about-main'>
-            <div className='about-container'>
+            <div className='about-container desktop'>
                 <div className='left'>
                     <div className='headings-main'>
                         <h5>About Me</h5>
@@ -30,6 +30,26 @@ function About() {
                     {currentAbout === 1 && <AboutExperience />}
                     {currentAbout === 2 && <AboutEducation />}
                     {currentAbout === 3 && <AboutSkills />}
+                </div>
+            </div>
+           
+
+
+           {/* ///mobile container */}
+
+            <div className='about-container mobile'>
+                <div className='left'>
+                    <div className='headings-main'>
+                        <h5>About Me</h5>
+                        <h6>All over my details find here</h6>
+                    </div>
+                </div>
+                <div className='right'>
+                    <AboutMe />
+                    <AboutExperience />
+                    <AboutEducation />
+                    
+                    <AboutSkills />
                 </div>
             </div>
         </div>
