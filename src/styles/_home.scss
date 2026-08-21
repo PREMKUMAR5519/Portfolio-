@@ -382,7 +382,7 @@
     overflow-x: clip;
     // Cream fallback: shows before the marble canvas's first frame, and
     // permanently if WebGL is unavailable.
-    background-color: #f2efe6;
+    background-color: #f9f7f1;
 
     // Break out of the 1280px #root cap so the section runs full width.
     // Viewport units include the scrollbar; body{overflow-x:clip} in
@@ -402,6 +402,9 @@
     height: 100%;
     z-index: 0;
     pointer-events: none;
+    // Blends the marble toward the near-white fallback underneath,
+    // softening the whole texture.
+    opacity: 0.5;
 }
 
 .work-heading {

@@ -49,26 +49,29 @@ float fbm(vec2 p) {
 
 void main() {
     vec2 uv = gl_FragCoord.xy / u_res.y;
-    float t = u_time * 0.03;
+    float t = u_time * 0.07;
 
     // Two levels of domain warping give the flowing, vein-like structure.
+    vec2 p = uv * 3.4;
     vec2 q = vec2(
-        fbm(uv * 1.6 + vec2(0.0, t)),
-        fbm(uv * 1.6 + vec2(5.2, t * 0.8))
+        fbm(p + vec2(0.0, t)),
+        fbm(p + vec2(5.2, t * 0.8))
     );
     vec2 r = vec2(
-        fbm(uv * 1.6 + 3.0 * q + vec2(1.7, 9.2) + t * 0.6),
-        fbm(uv * 1.6 + 3.0 * q + vec2(8.3, 2.8) - t * 0.4)
+        fbm(p + 3.0 * q + vec2(1.7, 9.2) + t * 0.6),
+        fbm(p + 3.0 * q + vec2(8.3, 2.8) - t * 0.4)
     );
-    float f = fbm(uv * 1.6 + 3.0 * r);
+    float f = fbm(p + 3.0 * r);
 
-    // Cream marble palette, kept deliberately low-contrast.
-    vec3 base = vec3(0.949, 0.937, 0.902);
-    vec3 mid  = vec3(0.910, 0.894, 0.847);
-    vec3 deep = vec3(0.858, 0.839, 0.784);
+    // Cream marble palette with clearly readable veining.
+    vec3 base = vec3(0.980, 0.973, 0.950);
+    vec3 mid  = vec3(0.914, 0.898, 0.852);
+    vec3 deep = vec3(0.812, 0.789, 0.726);
 
-    vec3 col = mix(base, mid, smoothstep(0.35, 0.75, f));
-    col = mix(col, deep, smoothstep(0.60, 0.95, f) * 0.55);
+    vec3 col = mix(base, mid, smoothstep(0.30, 0.70, f));
+    col = mix(col, deep, smoothstep(0.55, 0.88, f) * 0.85);
+    // fine secondary ripple so small-scale detail reads as texture
+    col -= 0.035 * fbm(p * 3.0 + r * 2.0 + t);
 
     gl_FragColor = vec4(col, 1.0);
 }
@@ -113,7 +116,7 @@ function MarbleBackground({ className }) {
 
         // The texture is soft, so render at a fraction of CSS size and let
         // the browser upscale — a large perf win at zero visual cost.
-        const RES_SCALE = 0.4
+        const RES_SCALE = 0.55
 
         const resize = () => {
             const w = Math.max(1, Math.round(canvas.clientWidth * RES_SCALE))
