@@ -2,9 +2,9 @@ import React, { useMemo, useRef, useState } from "react";
 import { cn } from "../../lib/utils";
 
 export const Background = ({
-    rows = 9,
-    cols = 27,
-    cellSize = 40
+    rows = 16,
+    cols = 30,
+    cellSize = 64
 }) => {
     const [clickedCell, setClickedCell] = useState(null);
     const [rippleKey, setRippleKey] = useState(0);
@@ -18,12 +18,12 @@ export const Background = ({
                 "[--cell-border-color:var(--color-neutral-300)] [--cell-fill-color:var(--color-neutral-100)] [--cell-shadow-color:var(--color-neutral-500)]",
                 "dark:[--cell-border-color:var(--color-neutral-700)] dark:[--cell-fill-color:var(--color-neutral-900)] dark:[--cell-shadow-color:var(--color-neutral-800)]"
             )}>
-            <div className="relative h-auto w-auto overflow-hidden">
+            <div className="relative h-full w-full overflow-hidden">
                 <div
                     className="pointer-events-none absolute inset-0 z-[2] h-full w-full overflow-hidden" />
                 <DivGrid
                     key={`base-${rippleKey}`}
-                    className="mask-radial-from-20% mask-radial-at-top opacity-600"
+                    className="hero-grid-fade"
                     rows={rows}
                     cols={cols}
                     cellSize={cellSize}
@@ -59,7 +59,13 @@ const DivGrid = ({
         gridTemplateRows: `repeat(${rows}, ${cellSize}px)`,
         width: cols * cellSize,
         height: rows * cellSize,
-        marginInline: "auto",
+        // Centre the fixed-size grid over the hero; it is intentionally larger
+        // than the viewport so the cells run past every edge instead of
+        // stopping in a visible straight line.
+        position: "absolute",
+        top: "50%",
+        left: "50%",
+        transform: "translate(-50%, -50%)",
     };
 
     return (

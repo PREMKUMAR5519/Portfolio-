@@ -18,6 +18,14 @@
   }
 }
 
+html,
+body {
+  /* Full-bleed sections use 100vw breakouts; viewport units include the
+     classic scrollbar's width, so clip the sliver of overflow they create.
+     `clip` (unlike `hidden`) doesn't turn body into a scroll container. */
+  overflow-x: clip;
+}
+
 #root {
   max-width: 1280px;
   margin: 0 auto;

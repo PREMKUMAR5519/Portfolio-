@@ -1,54 +1,37 @@
 import React from 'react'
-import { HiOutlineBuildingOffice } from "react-icons/hi2";
-import { CiCalendar } from "react-icons/ci";
+
+const experience = [
+    {
+        company: 'SMVEC, Pondicherry',
+        role: 'Website Developer',
+        period: '2025 – Present',
+        description:
+            'Building and maintaining the institution\'s web presence — designing responsive interfaces, developing internal tools, and keeping content and performance in good shape.',
+    },
+    {
+        company: 'Heyram Infrastructure, Chennai',
+        role: 'Full Stack Developer',
+        period: 'Apr 2024 – Dec 2024',
+        description:
+            'Created fully functional MERN stack web applications with responsive behaviour, smooth touch UI, and API integration.',
+    },
+]
 
 function AboutExperience() {
     return (
-        <div className="myexperience">
-            <h3 className="myexperience-heading">My Experience</h3>
+        <div className='workgrid'>
+            <h3 className='workgrid-heading'>Experience</h3>
 
-            <div className="myexperience-item">
-                <div className="myexperience-left">
-                    <div className="myexperience-round"></div>
-                </div>
-                <div className="myexperience-right">
-                    <h4>
-                        <span><HiOutlineBuildingOffice /></span>
-                        SMVEC, Pondicherry
-                    </h4>
-                    <h5>Website Developer</h5>
-                    <h6>
-                        <span><CiCalendar /></span>
-                        2025 - Present
-                    </h6>
-                    <p>
-                        Worked as a Full Stack developer at Dragon Sino Group, a Chinese company
-                        operating in the United Kingdom. Created fully functional MERN Stack Web
-                        Applications with responsive behavior, smooth touch UI, and API Integration.
-                    </p>
-                </div>
-            </div>
-
-            <div className="myexperience-item">
-                <div className="myexperience-left">
-                    <div className="myexperience-round"></div>
-                </div>
-                <div className="myexperience-right">
-                    <h4>
-                        <span><HiOutlineBuildingOffice /></span>
-                        Heyram Infrastructure, Chennai
-                    </h4>
-                    <h5>Full Stack Developer</h5>
-                    <h6>
-                        <span><CiCalendar /></span>
-                        Apr 2024 - Dec 2024
-                    </h6>
-                    <p>
-                        Worked as a Full Stack developer at Dragon Sino Group, a Chinese company
-                        operating in the United Kingdom. Created fully functional MERN Stack Web
-                        Applications with responsive behavior, smooth touch UI, and API Integration.
-                    </p>
-                </div>
+            <div className='workgrid-list'>
+                {experience.map((item) => (
+                    <article className='workcard' key={item.company}>
+                        <h4 className='workcard-title'>{item.company}</h4>
+                        <p className='workcard-period'>{item.period}</p>
+                        <hr className='workcard-rule' />
+                        <h5 className='workcard-role'>{item.role}</h5>
+                        <p className='workcard-text'>{item.description}</p>
+                    </article>
+                ))}
             </div>
         </div>
     )
