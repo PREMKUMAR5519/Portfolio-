@@ -1,6 +1,65 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
 
 
+//Top-right pill nav
+.pill-nav {
+    position: fixed;
+    top: 22px;
+    right: 26px;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 3px 10px;
+    background: #ffffff;
+    border: 1px solid rgba(17, 17, 17, 0.05);
+    border-radius: 999px;
+    box-shadow: 0 2px 8px rgba(17, 17, 17, 0.03);
+
+    a {
+        display: inline-block;
+        padding: 6px 14px;
+        border-radius: 999px;
+        font-size: 0.92rem;
+        font-weight: 500;
+        text-decoration: none;
+        color: rgba(58, 58, 58, 0.65);
+        transition: color 0.2s ease, background-color 0.2s ease;
+
+        &:hover {
+            color: #111111;
+            background: rgba(17, 17, 17, 0.06);
+        }
+    }
+
+    // Thin "|" divider centered in the gap between the two links.
+    a+a {
+        position: relative;
+
+        &::before {
+            content: "";
+            position: absolute;
+            left: -3.5px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 1px;
+            height: 55%;
+            background: rgba(17, 17, 17, 0.15);
+        }
+    }
+
+    @media (max-width: 650px) {
+        top: 14px;
+        right: 14px;
+        padding: 4px 8px;
+
+        a {
+            padding: 7px 11px;
+            font-size: 0.85rem;
+        }
+    }
+}
+
 //Hero section
 .hero-main {
     position: relative;
@@ -22,22 +81,6 @@
         margin: 0 auto;
         text-align: center;
     }
-}
-
-// Grid backdrop behind the hero. The grid itself is larger than the
-// viewport; this mask fades it out towards the edges so it never ends in a
-// visible straight line.
-.hero-grid-fade {
-    -webkit-mask-image: radial-gradient(ellipse 65% 55% at 50% 45%,
-            #000 0%,
-            rgba(0, 0, 0, 0.55) 45%,
-            transparent 78%);
-    mask-image: radial-gradient(ellipse 65% 55% at 50% 45%,
-            #000 0%,
-            rgba(0, 0, 0, 0.55) 45%,
-            transparent 78%);
-    -webkit-mask-repeat: no-repeat;
-    mask-repeat: no-repeat;
 }
 
 .hero-eyebrow {
@@ -125,18 +168,22 @@
 .headings-main {
     margin-bottom: 2rem;
 
+    // Sized to sit in proportion with the .aboutme-text body below it.
     h5 {
-        font-size: clamp(1.6rem, 3.2vw, 2.4rem);
+        font-size: clamp(1.9rem, 3.4vw, 2.8rem);
         font-weight: 600;
         letter-spacing: -0.02em;
+        line-height: 1.1;
         color: #1f1f1f;
+        will-change: filter, transform, opacity;
     }
 
     h6 {
-        margin-top: 0.5rem;
-        font-size: 1rem;
+        margin-top: 0.7rem;
+        font-size: clamp(0.95rem, 1.2vw, 1.1rem);
         font-weight: 400;
         color: rgba(34, 34, 34, 0.55);
+        will-change: filter, transform, opacity;
     }
 }
 
@@ -172,7 +219,7 @@
 //about me 
 
 .aboutme-main {
-    max-width: 780px;
+    max-width: 1040px;
     margin: 0 auto;
 
     .aboutme-lead {
@@ -181,21 +228,29 @@
         letter-spacing: 2px;
         text-transform: uppercase;
         color: rgba(34, 34, 34, 0.5);
-        margin-bottom: 1.1rem;
+        margin-bottom: 1.6rem;
         text-align: center;
     }
 
     .aboutme-text {
-        font-size: 1.08rem;
-        font-weight: 300;
-        line-height: 1.8;
-        color: rgba(34, 34, 34, 0.78);
+        font-size: clamp(1.15rem, 1.85vw, 1.65rem);
+        font-weight: 500;
+        letter-spacing: -0.015em;
+        line-height: 1.5;
+        color: #1f1f1f;
         text-align: center;
 
         @media (max-width: 650px) {
-            font-size: 0.98rem;
+            font-size: 1.05rem;
             text-align: left;
         }
+    }
+
+    // inline-block so the per-word blur filter renders cleanly; the text
+    // nodes between spans keep normal wrapping and spacing.
+    .aboutme-word {
+        display: inline-block;
+        will-change: filter, opacity;
     }
 }
 
@@ -375,14 +430,111 @@
     }
 }
 
+//Home - Tools & tech
+.tools-main {
+    padding: 9rem 24px;
+    text-align: center;
+    overflow-x: clip;
+
+    @media (max-width: 650px) {
+        padding: 5rem 20px;
+    }
+}
+
+.tools-heading {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 2.2rem;
+
+    @media (max-width: 650px) {
+        gap: 1.5rem;
+    }
+}
+
+.tools-line {
+    font-size: clamp(2.6rem, 7vw, 5.5rem);
+    font-weight: 600;
+    letter-spacing: -0.03em;
+    line-height: 1.05;
+    color: #111111;
+}
+
+// The two lines stagger left/right of center, mirroring the reference.
+.tools-line-1 {
+    align-self: flex-start;
+    margin-left: 8%;
+
+    @media (max-width: 650px) {
+        margin-left: 0;
+        align-self: center;
+    }
+}
+
+.tools-line-2 {
+    align-self: flex-end;
+    margin-right: 12%;
+
+    @media (max-width: 650px) {
+        margin-right: 0;
+        align-self: center;
+    }
+}
+
+.tools-icons {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 14px;
+
+    @media (max-width: 650px) {
+        gap: 10px;
+    }
+}
+
+// App-icon style tile: white rounded square with the logo inside.
+.tools-tile {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: clamp(44px, 5vw, 64px);
+    height: clamp(44px, 5vw, 64px);
+    border-radius: 22%;
+    background: #ffffff;
+    box-shadow: 0 2px 10px rgba(17, 17, 17, 0.08);
+    will-change: transform;
+    transition: transform 0.25s ease;
+
+    &:hover {
+        transform: translateY(-5px) scale(1.06);
+    }
+
+    img {
+        width: 58%;
+        height: 58%;
+        object-fit: contain;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .tools-tile {
+        transition: none;
+
+        &:hover {
+            transform: none;
+        }
+    }
+}
+
 //Home - Projects
 .work-main {
     position: relative;
-    padding: 7rem 0 8rem;
     overflow-x: clip;
-    // Cream fallback: shows before the marble canvas's first frame, and
-    // permanently if WebGL is unavailable.
-    background-color: #f9f7f1;
+    // Soft warm-gray gradient, light at the top drifting toward a deeper
+    // olive-gray at the bottom.
+    background: linear-gradient(170deg, #eeeee8 0%, #e7e7e1 50%, #dcddd5 100%);
+    padding-bottom: 10rem;
 
     // Break out of the 1280px #root cap so the section runs full width.
     // Viewport units include the scrollbar; body{overflow-x:clip} in
@@ -391,90 +543,80 @@
     margin-left: calc(50% - 50vw);
 
     @media (max-width: 900px) {
-        padding: 4.5rem 0 5rem;
+        padding-bottom: 6rem;
     }
 }
 
-.work-bg {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 0;
+// Sticky full-viewport layer holding the giant heading. It pins while the
+// card list — pulled up over it with a -100vh margin — scrolls across.
+.work-pin {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    // The layer covers the viewport for the whole section; clicks must fall
+    // through to the cards scrolling above it.
     pointer-events: none;
-    // Blends the marble toward the near-white fallback underneath,
-    // softening the whole texture.
-    opacity: 0.5;
 }
 
 .work-heading {
-    position: relative;
-    z-index: 1;
-    max-width: 1500px;
-    margin: 0 auto 5rem;
-    padding: 0 48px;
-    font-size: clamp(1.6rem, 3vw, 2.4rem);
+    font-size: clamp(3.4rem, 12vw, 12.5rem);
     font-weight: 400;
-    letter-spacing: -0.01em;
-    color: #1f1f1f;
-
-    @media (max-width: 900px) {
-        margin-bottom: 2.5rem;
-        padding: 0 24px;
-    }
+    letter-spacing: -0.04em;
+    line-height: 1;
+    white-space: nowrap;
+    color: #9d9e97;
+    will-change: transform;
 }
 
 .work-list {
     position: relative;
     z-index: 1;
     max-width: 1500px;
-    margin: 0 auto;
-    padding: 0 48px;
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    column-gap: 6rem;
-    row-gap: 7rem;
-
-    // Offset the right column so the two columns interleave rather than
-    // sitting in level rows.
-    >.work-item:nth-child(even) {
-        margin-top: 9rem;
-    }
+    // -100vh lifts the list back over the pinned heading layer.
+    margin: -100vh auto 0;
+    padding: 22vh 48px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 11rem;
 
     @media (max-width: 900px) {
-        padding: 0 24px;
-        column-gap: 2rem;
-        row-gap: 3.5rem;
-
-        >.work-item:nth-child(even) {
-            margin-top: 3rem;
-        }
-    }
-
-    @media (max-width: 650px) {
-        grid-template-columns: 1fr;
-        row-gap: 3rem;
-
-        >.work-item:nth-child(even) {
-            margin-top: 0;
-        }
+        padding: 24vh 24px 0;
+        gap: 6rem;
     }
 }
 
 .work-item {
     display: block;
     text-decoration: none;
+    width: min(620px, 100%);
+
+    // Cards alternate sides so each one slides past a different part of the
+    // heading instead of covering the same spot every time.
+    &:nth-child(odd) {
+        margin-right: auto;
+    }
+
+    &:nth-child(even) {
+        margin-left: auto;
+    }
+
+    @media (max-width: 650px) {
+        width: 100%;
+    }
 }
 
 .work-media {
     position: relative;
     overflow: hidden;
     border-radius: 5px;
-    background: #e6e2d4;
+    background: #d9d7cb;
     // Every screenshot is ~2:1, so a uniform 2:1 frame gives all the cards an
     // identical footprint while `contain` keeps each image whole.
     aspect-ratio: 2 / 1;
-    margin-bottom: 1.6rem;
+    margin-bottom: 1.4rem;
     will-change: transform;
 
     @media (max-width: 650px) {
@@ -498,18 +640,26 @@
     opacity: 0.88;
 }
 
+// Title left, category right — mirroring the reference layout.
+.work-meta {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1.5rem;
+}
+
 .work-title {
-    font-size: clamp(1.3rem, 2vw, 1.7rem);
+    font-size: clamp(1.1rem, 1.6vw, 1.35rem);
     font-weight: 500;
     letter-spacing: -0.01em;
     color: #1f1f1f;
-    margin-bottom: 0.55rem;
 }
 
 .work-client {
     font-size: 0.9rem;
     font-weight: 500;
-    color: rgba(34, 34, 34, 0.68);
+    color: rgba(34, 34, 34, 0.55);
+    text-align: right;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -604,6 +754,51 @@
             background-image: none;
             background-color: #3d6e96;
         }
+    }
+}
+
+// Wrapper around the CTA + footer: a soft orange glow blooms up from the
+// bottom edge of the page, like light spilling from below the fold.
+.footer-glow-wrap {
+    position: relative;
+    // Full-bleed so the glow isn't capped by the #root width.
+    width: 100vw;
+    margin-left: calc(50% - 50vw);
+    overflow: hidden;
+
+    &::before {
+        content: "";
+        position: absolute;
+        left: 50%;
+        bottom: 0;
+        transform: translate(-50%, 55%);
+        width: min(1300px, 130vw);
+        aspect-ratio: 1.35 / 1;
+        border-radius: 50%;
+        pointer-events: none;
+        z-index: 0;
+        // One continuous teal → indigo → magenta sweep (the hero palette); a
+        // radial mask fades it out from bottom-center so it reads as a single
+        // glowing bloom rather than separate color patches.
+        background: linear-gradient(90deg,
+                rgba(8, 158, 144, 0.65) 0%,
+                rgba(55, 66, 156, 0.6) 50%,
+                rgba(196, 62, 107, 0.6) 100%);
+        mask-image: radial-gradient(closest-side at 50% 60%,
+                #000 0%,
+                rgba(0, 0, 0, 0.55) 50%,
+                transparent 100%);
+        -webkit-mask-image: radial-gradient(closest-side at 50% 60%,
+                #000 0%,
+                rgba(0, 0, 0, 0.55) 50%,
+                transparent 100%);
+        filter: blur(52px);
+    }
+
+    // Keep the CTA and footer content painting above the glow.
+    >* {
+        position: relative;
+        z-index: 1;
     }
 }
 

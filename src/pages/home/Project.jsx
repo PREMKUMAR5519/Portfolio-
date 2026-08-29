@@ -1,6 +1,5 @@
 import React, { useEffect, useRef } from 'react'
 import gsap from 'gsap'
-import MarbleBackground from '../../components/MarbleBackground'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
 gsap.registerPlugin(ScrollTrigger)
@@ -33,52 +32,58 @@ function Project() {
                     // Reduced motion: no animation, content simply shows.
                     if (reduce) return
 
-                    gsap.from('.work-heading', {
-                        opacity: 0,
-                        y: 30,
-                        duration: 0.8,
-                        ease: 'power3.out',
-                        scrollTrigger: {
-                            trigger: '.work-heading',
-                            start: 'top 88%',
-                        },
-                    })
+                    // The giant pinned heading drifts slowly upward while the
+                    // cards stream over it, so the two layers read as depths.
+                    gsap.fromTo(
+                        '.work-heading',
+                        { yPercent: 18, opacity: 0.6 },
+                        {
+                            yPercent: -14,
+                            opacity: 1,
+                            ease: 'none',
+                            scrollTrigger: {
+                                trigger: sectionRef.current,
+                                start: 'top bottom',
+                                end: 'bottom top',
+                                scrub: 0.8,
+                            },
+                        }
+                    )
 
                     gsap.utils.toArray('.work-item').forEach((item, i) => {
                         // Reveal: frame rises first, the text follows a beat later.
                         const reveal = gsap.timeline({
                             scrollTrigger: {
                                 trigger: item,
-                                start: 'top 85%',
+                                start: 'top 88%',
                             },
                         })
                         reveal
                             .from(item.querySelector('.work-media'), {
                                 opacity: 0,
-                                y: 70,
+                                y: 80,
                                 duration: 1,
                                 ease: 'power3.out',
                             })
                             .from(
-                                [item.querySelector('.work-title'), item.querySelector('.work-client')],
+                                item.querySelector('.work-meta'),
                                 {
                                     opacity: 0,
                                     y: 24,
                                     duration: 0.7,
-                                    stagger: 0.1,
                                     ease: 'power3.out',
                                 },
                                 '-=0.6'
                             )
 
-                        // Parallax: scrubbed drift tied to scroll position.
-                        // Alternating depths make the two columns slide past
-                        // each other; scaled down on small screens where row
-                        // gaps are tight.
-                        const depth = (i % 2 === 0 ? 56 : 92) * (small ? 0.4 : 1)
+                        // Parallax: scrubbed drift tied to scroll position, so
+                        // each card glides past the pinned heading at its own
+                        // pace. Alternating depths keep the stream from moving
+                        // as one rigid block.
+                        const depth = (i % 2 === 0 ? 48 : 84) * (small ? 0.4 : 1)
                         gsap.fromTo(
                             item.querySelector('.work-media'),
-                            { yPercent: 0, y: depth },
+                            { y: depth },
                             {
                                 y: -depth,
                                 ease: 'none',
@@ -100,8 +105,11 @@ function Project() {
 
     return (
         <section className='work-main' ref={sectionRef}>
-            <MarbleBackground className='work-bg' />
-            <h2 className='work-heading'>Recent work</h2>
+            {/* Sticky full-viewport layer: the heading stays put while the
+                card list (pulled up over it with a -100vh margin) scrolls by. */}
+            <div className='work-pin'>
+                <h2 className='work-heading'>Recent works</h2>
+            </div>
 
             <div className='work-list'>
                 {projects.map((project) => (
@@ -118,8 +126,10 @@ function Project() {
                                 alt={project.name}
                                 loading='lazy' />
                         </div>
-                        <h3 className='work-title'>{project.name}</h3>
-                        <p className='work-client'>{project.client}</p>
+                        <div className='work-meta'>
+                            <h3 className='work-title'>{project.name}</h3>
+                            <p className='work-client'>{project.client}</p>
+                        </div>
                     </a>
                 ))}
             </div>
