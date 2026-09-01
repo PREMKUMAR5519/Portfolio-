@@ -83,6 +83,54 @@
     }
 }
 
+// Intro curtain: covers the viewport from first paint so nothing flashes
+// before GSAP takes over; the timeline sweeps it up and display:none's it.
+.hero-curtain {
+    position: fixed;
+    inset: 0;
+    z-index: 999;
+    background: #101010;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+}
+
+.hero-curtain-name {
+    font-size: 0.85rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    color: #f4f2ec;
+    // Starts wide + invisible; the timeline tracks it in.
+    letter-spacing: 1.3em;
+    opacity: 0;
+    // Re-centre: tracking adds trailing space after the last letter.
+    padding-left: 0.5em;
+    will-change: letter-spacing, opacity;
+}
+
+// Gradient hairline that draws across beneath the name.
+.hero-curtain-line {
+    width: min(260px, 46vw);
+    height: 1px;
+    background: linear-gradient(90deg, #089e90, #37429c, #c43e6b);
+    transform: scaleX(0);
+    transform-origin: left center;
+    will-change: transform;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .hero-curtain {
+        display: none;
+    }
+}
+
+// SplitText line wrappers (masked by overflow clip parents it creates).
+.hero-title-line {
+    will-change: transform;
+}
+
 .hero-eyebrow {
     font-size: 0.85rem;
     font-weight: 400;
@@ -432,98 +480,129 @@
 
 //Home - Tools & tech
 .tools-main {
-    padding: 9rem 24px;
-    text-align: center;
+    width: 100vw;
+    margin-left: calc(50% - 50vw);
+    background: #eeeeee;
+    padding: clamp(5rem, 9vw, 7.5rem) 24px clamp(3.4rem, 6vw, 5rem);
     overflow-x: clip;
+}
 
-    @media (max-width: 650px) {
-        padding: 5rem 20px;
-    }
+// The content block itself is what ScrollTrigger pins at screen centre while
+// the phases (Tools & Tech → Deployment → AI) swap; the section around it
+// just supplies the grey band.
+.tools-inner {
+    width: 100%;
+    max-width: 960px;
+    margin: 0 auto;
 }
 
 .tools-heading {
-    max-width: 1100px;
-    margin: 0 auto;
     display: flex;
     flex-direction: column;
-    gap: 2.2rem;
-
-    @media (max-width: 650px) {
-        gap: 1.5rem;
-    }
+    margin: 0;
+    color: #000000;
 }
 
 .tools-line {
-    font-size: clamp(2.6rem, 7vw, 5.5rem);
+    font-size: clamp(3.2rem, 7vw, 4.8rem);
     font-weight: 600;
-    letter-spacing: -0.03em;
-    line-height: 1.05;
-    color: #111111;
+    letter-spacing: -0.04em;
+    line-height: 0.95;
 }
 
-// The two lines stagger left/right of center, mirroring the reference.
+// All three phase titles sit in the same grid cell so swapping them never
+// shifts the layout; the cell is as wide/tall as the largest title.
 .tools-line-1 {
     align-self: flex-start;
-    margin-left: 8%;
+    display: grid;
+}
 
-    @media (max-width: 650px) {
-        margin-left: 0;
-        align-self: center;
-    }
+.tools-title {
+    grid-area: 1 / 1;
+    white-space: nowrap;
+    will-change: transform, filter, opacity;
+    transform: translateZ(0);
 }
 
 .tools-line-2 {
     align-self: flex-end;
-    margin-right: 12%;
+    margin-top: 1.15rem;
+}
 
-    @media (max-width: 650px) {
-        margin-right: 0;
-        align-self: center;
-    }
+// Same trick for the tile groups: they overlap, and the stage takes the
+// height of the tallest group so the "I use" line stays put across phases.
+.tools-stage {
+    display: grid;
+    align-items: center;
+    margin-top: 1.6rem;
+    // Inactive phases are faded out but still stacked here; keep them from
+    // catching hovers/clicks through the visible one.
+    pointer-events: none;
 }
 
 .tools-icons {
+    grid-area: 1 / 1;
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    gap: 14px;
-
-    @media (max-width: 650px) {
-        gap: 10px;
-    }
+    align-items: center;
+    gap: clamp(0.65rem, 1.15vw, 1rem);
 }
 
-// App-icon style tile: white rounded square with the logo inside.
+// Two layers per tile on purpose: the outer `.tools-tile` is what the phase
+// swap animates, the inner `.tools-tile-face` is what the entrance animates.
 .tools-tile {
+    display: block;
+    width: clamp(38px, 4.4vw, 54px);
+    height: clamp(38px, 4.4vw, 54px);
+    will-change: transform, filter, opacity;
+    transform: translateZ(0);
+}
+
+.tools-tile-face {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: clamp(44px, 5vw, 64px);
-    height: clamp(44px, 5vw, 64px);
-    border-radius: 22%;
+    width: 100%;
+    height: 100%;
+    border-radius: 12px;
+    overflow: hidden;
     background: #ffffff;
-    box-shadow: 0 2px 10px rgba(17, 17, 17, 0.08);
-    will-change: transform;
-    transition: transform 0.25s ease;
-
-    &:hover {
-        transform: translateY(-5px) scale(1.06);
-    }
-
-    img {
-        width: 58%;
-        height: 58%;
-        object-fit: contain;
-    }
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
+    will-change: transform, filter, opacity;
+    transform: translateZ(0);
 }
 
-@media (prefers-reduced-motion: reduce) {
-    .tools-tile {
-        transition: none;
+.tools-tile img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
 
-        &:hover {
-            transform: none;
-        }
+@media (max-width: 650px) {
+    .tools-main {
+        padding: 4.5rem 18px 3.5rem;
+    }
+
+    .tools-inner {
+        max-width: 420px;
+    }
+
+    .tools-line {
+        font-size: clamp(2.4rem, 14vw, 3.4rem);
+    }
+
+    .tools-stage {
+        margin-top: 1.2rem;
+    }
+
+    .tools-icons {
+        gap: 0.55rem;
+    }
+
+    .tools-line-2 {
+        margin-top: 1rem;
     }
 }
 
@@ -591,7 +670,7 @@
 .work-item {
     display: block;
     text-decoration: none;
-    width: min(620px, 100%);
+    width: min(580px, 100%);
 
     // Cards alternate sides so each one slides past a different part of the
     // heading instead of covering the same spot every time.
@@ -608,44 +687,270 @@
     }
 }
 
+// ---- Scene: a grey panel holding a browser window + a phone. Everything
+// inside is sized in `cqw` (1% of the panel width) so the mockups scale
+// together with the card at any breakpoint.
 .work-media {
     position: relative;
-    overflow: hidden;
-    border-radius: 5px;
-    background: #d9d7cb;
-    // Every screenshot is ~2:1, so a uniform 2:1 frame gives all the cards an
-    // identical footprint while `contain` keeps each image whole.
-    aspect-ratio: 2 / 1;
+    container-type: inline-size;
+    // Visible so the phone can slide just past the panel edge on hover.
+    overflow: visible;
+    aspect-ratio: 16 / 10;
+    border-radius: 3px;
     margin-bottom: 1.4rem;
     will-change: transform;
+    // No panel: the devices sit directly on the section background. This
+    // element is now just the positioning/sizing context for them.
+    background: transparent;
 
     @media (max-width: 650px) {
         margin-bottom: 1.1rem;
     }
 }
 
+// ---- Browser window
+.work-browser {
+    position: absolute;
+    top: 2cqw;
+    left: 0;
+    width: 88cqw;
+    z-index: 1;
+    border-radius: 2cqw;
+    overflow: hidden;
+    background: #ffffff;
+    box-shadow:
+        0 0 0 1px rgba(0, 0, 0, 0.06),
+        0 2.4cqw 4.5cqw -1.6cqw rgba(15, 15, 15, 0.35);
+    transform-origin: 50% 100%;
+    transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.work-browser-bar {
+    display: flex;
+    align-items: center;
+    gap: 2cqw;
+    height: 5.2cqw;
+    padding: 0 2.2cqw;
+    background: linear-gradient(#f7f7f6, #f0f0ee);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.07);
+}
+
+.work-browser-dots {
+    display: flex;
+    gap: 1cqw;
+    flex: 0 0 auto;
+
+    i {
+        display: block;
+        width: 1.55cqw;
+        height: 1.55cqw;
+        border-radius: 50%;
+
+        &:nth-child(1) { background: #ff5f57; }
+        &:nth-child(2) { background: #febc2e; }
+        &:nth-child(3) { background: #28c840; }
+    }
+}
+
+.work-browser-url {
+    flex: 1 1 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.9cqw;
+    height: 3.3cqw;
+    max-width: 46cqw;
+    margin: 0 auto;
+    padding: 0 2cqw;
+    border-radius: 999px;
+    background: #e4e4e2;
+    font-family: "Roboto", sans-serif;
+    font-size: 1.85cqw;
+    font-weight: 500;
+    letter-spacing: 0.01em;
+    color: #5f5f5c;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.work-browser-lock {
+    flex: 0 0 auto;
+    width: 1.3cqw;
+    height: 1.55cqw;
+    border-radius: 0.3cqw;
+    background: #8d8d89;
+    position: relative;
+
+    &::before {
+        content: "";
+        position: absolute;
+        left: 0.25cqw;
+        right: 0.25cqw;
+        top: -0.9cqw;
+        height: 1cqw;
+        border: 0.28cqw solid #8d8d89;
+        border-bottom: 0;
+        border-radius: 1cqw 1cqw 0 0;
+    }
+}
+
+.work-browser-actions {
+    display: flex;
+    gap: 1.1cqw;
+    flex: 0 0 auto;
+
+    i {
+        display: block;
+        width: 1.7cqw;
+        height: 1.7cqw;
+        border-radius: 0.4cqw;
+        border: 0.24cqw solid rgba(0, 0, 0, 0.28);
+    }
+}
+
+.work-browser-screen {
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    background: #ececea;
+}
+
 .work-img {
     display: block;
     width: 100%;
     height: 100%;
-    // `contain` shows the whole screenshot; nothing is cropped.
-    object-fit: contain;
-    object-position: center;
-    transition: opacity 0.4s ease;
+    // Top-aligned cover: the hero of the site fills the window like a real
+    // first paint would; no letterboxing.
+    object-fit: cover;
+    object-position: top center;
 }
 
-// The parallax script owns .work-media's transform, so the hover cue lives on
-// the inner image instead of fighting it for the same property.
-.work-item:hover .work-img {
-    opacity: 0.88;
+// ---- Phone, overlapping the browser's bottom-right corner
+.work-phone {
+    position: absolute;
+    right: 0;
+    bottom: 1cqw;
+    width: 22.5cqw;
+    z-index: 2;
+    // Slim bezel: the screen runs nearly edge to edge, like current phones.
+    padding: 0.55cqw;
+    border-radius: 4.6cqw;
+    background: #141414;
+    // Grey metal rim around the black bezel, with a darker outer hairline so
+    // the edge still separates from light panels.
+    box-shadow:
+        inset 0 0 0 0.16cqw #2e2e2e,
+        0 0 0 0.26cqw #a3a3a3,
+        0 0 0 0.34cqw #6f6f6f,
+        0 2.6cqw 5cqw -1.4cqw rgba(10, 10, 10, 0.55);
+    transform-origin: 50% 100%;
+    transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+
+    // Side buttons
+    &::before,
+    &::after {
+        content: "";
+        position: absolute;
+        width: 0.12cqw;
+        border-radius: 0.06cqw;
+        background: #8f8f8f;
+    }
+
+    &::before {
+        left: -0.12cqw;
+        top: 11cqw;
+        height: 2cqw;
+    }
+
+    &::after {
+        right: -0.12cqw;
+        top: 13cqw;
+        height: 2.8cqw;
+    }
 }
 
-// Title left, category right — mirroring the reference layout.
+// Centred punch-hole camera near the top of the display.
+.work-phone-punch {
+    position: absolute;
+    top: 1.7cqw;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1;
+    width: 0.9cqw;
+    height: 0.9cqw;
+    border-radius: 50%;
+    background: #0a0a0a;
+    // Faint lens ring so it reads as a camera, not a dot.
+    box-shadow: inset 0 0 0 0.2cqw #1c1c1e;
+}
+
+.work-phone-screen {
+    aspect-ratio: 9 / 19.5;
+    overflow: hidden;
+    // Outer radius minus the bezel so the corners stay concentric.
+    border-radius: 4.05cqw;
+    background: #f1f1ef;
+
+    img {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: top center;
+    }
+}
+
+// Placeholder: until a real mobile screenshot exists, the desktop capture is
+// shown scaled up and centred so the site's hero copy fills the phone.
+.work-phone.is-placeholder .work-phone-screen img {
+    width: 260%;
+    max-width: none;
+    margin-left: -80%; // (260% - 100%) / 2 → centre the wide image
+    object-position: 50% 0;
+}
+
+// Hover: the pair separates — the browser eases left, the phone slides right
+// to sit beside it (just past the panel edge) and lifts a touch.
+.work-item:hover {
+    .work-browser {
+        transform: translate(-3cqw, -0.8cqw);
+    }
+
+    .work-phone {
+        transform: translate(6cqw, -1.6cqw);
+    }
+
+    .work-visit {
+        color: #1f1f1f;
+        background: rgba(17, 17, 17, 0.08);
+
+        svg {
+            transform: translate(2px, -2px);
+        }
+    }
+}
+
+// ---- Meta row: index · title / client · visit cue
 .work-meta {
     display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    gap: 1.5rem;
+    align-items: center;
+    gap: 1.1rem;
+}
+
+.work-index {
+    flex: 0 0 auto;
+    font-family: "Roboto", sans-serif;
+    font-size: 0.78rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    color: rgba(34, 34, 34, 0.45);
+    padding-top: 0.15rem;
+    align-self: flex-start;
+}
+
+.work-meta-text {
+    flex: 1 1 auto;
+    min-width: 0;
 }
 
 .work-title {
@@ -656,20 +961,46 @@
 }
 
 .work-client {
+    margin-top: 0.2rem;
     font-size: 0.9rem;
     font-weight: 500;
     color: rgba(34, 34, 34, 0.55);
-    text-align: right;
+}
+
+.work-visit {
+    flex: 0 0 auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.5rem 0.85rem;
+    border-radius: 999px;
+    font-size: 0.82rem;
+    font-weight: 500;
+    color: rgba(34, 34, 34, 0.6);
+    background: rgba(17, 17, 17, 0.045);
+    white-space: nowrap;
+    transition: color 0.25s ease, background-color 0.25s ease;
+
+    svg {
+        transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    @media (max-width: 650px) {
+        display: none;
+    }
 }
 
 @media (prefers-reduced-motion: reduce) {
 
-    .work-img {
+    .work-browser,
+    .work-phone,
+    .work-visit svg {
         transition: none;
     }
 
-    .work-item:hover .work-img {
-        opacity: 1;
+    .work-item:hover .work-browser,
+    .work-item:hover .work-phone {
+        transform: none;
     }
 }
 
