@@ -480,12 +480,18 @@
 
 //Home - Tools & tech
 .tools-main {
+    position: relative;
     width: 100vw;
     margin-left: calc(50% - 50vw);
-    background: #eeeeee;
-    padding: clamp(5rem, 9vw, 7.5rem) 24px clamp(3.4rem, 6vw, 5rem);
+    // Stays flat white all the way to its bottom edge. .work-main below
+    // opens on #ffffff too and ramps to warm gray itself, so the two meet
+    // white-on-white and the transition happens entirely inside that section.
+    background: #ffffff;
+    padding: clamp(5rem, 9vw, 7.5rem) 24px clamp(6rem, 11vw, 9rem);
     overflow-x: clip;
 }
+
+
 
 // The content block itself is what ScrollTrigger pins at screen centre while
 // the phases (Tools & Tech → Deployment → AI) swap; the section around it
@@ -501,6 +507,8 @@
     flex-direction: column;
     margin: 0;
     color: #000000;
+    // Animated as one unit on the way out, once the pin releases.
+    will-change: transform, filter, opacity;
 }
 
 .tools-line {
@@ -610,9 +618,9 @@
 .work-main {
     position: relative;
     overflow-x: clip;
-    // Soft warm-gray gradient, light at the top drifting toward a deeper
-    // olive-gray at the bottom.
-    background: linear-gradient(170deg, #eeeee8 0%, #e7e7e1 50%, #dcddd5 100%);
+    // NOTE: background and padding-bottom are set by the "Recent works
+    // upscale" .work-main block further down this file, which overrides
+    // both. Change the colours there, not here.
     padding-bottom: 10rem;
 
     // Break out of the 1280px #root cap so the section runs full width.
@@ -711,7 +719,10 @@
 // ---- Browser window
 .work-browser {
     position: absolute;
-    top: 2cqw;
+    // Bottom-anchored on the SAME line as .work-phone so the two mockups
+    // stand on a shared ground plane. Anchoring this one from the top instead
+    // let their baselines drift apart as the card resized.
+    bottom: 1cqw;
     left: 0;
     width: 88cqw;
     z-index: 1;
@@ -776,37 +787,10 @@
 
 .work-browser-lock {
     flex: 0 0 auto;
-    width: 1.3cqw;
-    height: 1.55cqw;
-    border-radius: 0.3cqw;
-    background: #8d8d89;
-    position: relative;
-
-    &::before {
-        content: "";
-        position: absolute;
-        left: 0.25cqw;
-        right: 0.25cqw;
-        top: -0.9cqw;
-        height: 1cqw;
-        border: 0.28cqw solid #8d8d89;
-        border-bottom: 0;
-        border-radius: 1cqw 1cqw 0 0;
-    }
-}
-
-.work-browser-actions {
-    display: flex;
-    gap: 1.1cqw;
-    flex: 0 0 auto;
-
-    i {
-        display: block;
-        width: 1.7cqw;
-        height: 1.7cqw;
-        border-radius: 0.4cqw;
-        border: 0.24cqw solid rgba(0, 0, 0, 0.28);
-    }
+    display: block;
+    height: 1.95cqw;
+    width: 1.46cqw; // 12/16 of the height, matching the viewBox ratio
+    color: #8d8d89;
 }
 
 .work-browser-screen {
@@ -909,15 +893,18 @@
     object-position: 50% 0;
 }
 
-// Hover: the pair separates — the browser eases left, the phone slides right
-// to sit beside it (just past the panel edge) and lifts a touch.
+// Hover: the pair separates sideways — the browser eases left, the phone
+// slides right to sit beside it, just past the panel edge.
+//
+// Both lift by the SAME amount: they share a ground line, so any difference
+// in the Y translation would visibly break it on hover.
 .work-item:hover {
     .work-browser {
-        transform: translate(-3cqw, -0.8cqw);
+        transform: translate(-3cqw, -1.2cqw);
     }
 
     .work-phone {
-        transform: translate(6cqw, -1.6cqw);
+        transform: translate(6cqw, -1.2cqw);
     }
 
     .work-visit {
@@ -937,17 +924,6 @@
     gap: 1.1rem;
 }
 
-.work-index {
-    flex: 0 0 auto;
-    font-family: "Roboto", sans-serif;
-    font-size: 0.78rem;
-    font-weight: 500;
-    letter-spacing: 0.08em;
-    color: rgba(34, 34, 34, 0.45);
-    padding-top: 0.15rem;
-    align-self: flex-start;
-}
-
 .work-meta-text {
     flex: 1 1 auto;
     min-width: 0;
@@ -957,7 +933,7 @@
     font-size: clamp(1.1rem, 1.6vw, 1.35rem);
     font-weight: 500;
     letter-spacing: -0.01em;
-    color: #1f1f1f;
+    color: rgba(34, 34, 34, 0.72);
 }
 
 .work-client {
@@ -1006,9 +982,26 @@
 
 // Recent works upscale: preserves the sticky-heading + parallax stream concept.
 .work-main {
-    background:
-        linear-gradient(180deg, rgba(255, 255, 255, 0.42) 0%, rgba(255, 255, 255, 0) 24%),
-        linear-gradient(150deg, #eeeeea 0%, #e4e5dd 52%, #d7d9cf 100%);
+    // The whole warm-gray ramp lives in ONE vertical gradient that starts at
+    // pure white, so the top edge renders the exact colour .tools-main ends
+    // on and the join is invisible.
+    //
+    // Deliberately 180deg, not an angled gradient: at an angle the 0% stop
+    // sits off-canvas past the upper-left corner, so the colour actually
+    // painted on the top edge is already part-way down the ramp and no longer
+    // matches the section above it.
+    //
+    // A white translucent overlay must not be layered on top of this either —
+    // it lightens the first pixel past white-equivalent and re-inverts the
+    // seam (lighter below, darker above), which is the artefact this replaces.
+    background: linear-gradient(
+        180deg,
+        #ffffff 0%,
+        #f4f4f0 9%,
+        #eeeeea 16%,
+        #e4e5dd 54%,
+        #d7d9cf 100%
+    );
     padding-bottom: clamp(7rem, 12vw, 12rem);
 }
 
@@ -1021,8 +1014,11 @@
         linear-gradient(rgba(34, 34, 34, 0.045) 1px, transparent 1px),
         linear-gradient(90deg, rgba(34, 34, 34, 0.035) 1px, transparent 1px);
     background-size: 64px 64px;
-    mask-image: linear-gradient(to bottom, transparent 0%, #000 22%, #000 76%, transparent 100%);
-    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 22%, #000 76%, transparent 100%);
+    // Stays fully transparent until past 16% — the point where the
+    // background gradient has finished ramping off white. Any texture above
+    // that would re-draw the seam the gradient just dissolved.
+    mask-image: linear-gradient(to bottom, transparent 0%, transparent 16%, #000 32%, #000 76%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, transparent 16%, #000 32%, #000 76%, transparent 100%);
     opacity: 0.42;
 }
 
@@ -1030,31 +1026,6 @@
     flex-direction: column;
     gap: clamp(1rem, 2vw, 1.4rem);
     isolation: isolate;
-}
-
-.work-pin-kicker,
-.work-pin-count {
-    position: relative;
-    z-index: 1;
-    font-family: "Roboto", sans-serif;
-    font-size: clamp(0.68rem, 1vw, 0.78rem);
-    font-weight: 600;
-    letter-spacing: 0.16em;
-    line-height: 1;
-    text-transform: uppercase;
-    color: rgba(34, 34, 34, 0.48);
-}
-
-.work-pin-kicker {
-    padding: 0.62rem 0.9rem;
-    border: 1px solid rgba(34, 34, 34, 0.1);
-    border-radius: 999px;
-    background: rgba(255, 255, 255, 0.3);
-    backdrop-filter: blur(10px);
-}
-
-.work-pin-count {
-    color: rgba(34, 34, 34, 0.35);
 }
 
 .work-heading {
@@ -1096,11 +1067,6 @@
     padding: 0 0.2rem;
 }
 
-.work-index {
-    width: 2.6rem;
-    color: color-mix(in srgb, var(--work-accent), rgba(34, 34, 34, 0.48) 72%);
-}
-
 .work-eyebrow {
     display: block;
     margin-bottom: 0.42rem;
@@ -1136,10 +1102,6 @@
         gap: 6rem;
     }
 
-    .work-pin-kicker,
-    .work-pin-count {
-        font-size: 0.66rem;
-    }
 }
 
 @media (max-width: 650px) {
@@ -1163,11 +1125,6 @@
     .work-meta {
         align-items: flex-start;
         gap: 0.75rem;
-    }
-
-    .work-index {
-        width: 2rem;
-        font-size: 0.7rem;
     }
 
     .work-title {

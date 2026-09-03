@@ -94,6 +94,29 @@ function Project() {
 
                     if (reduce) return
 
+                    // Hand-off from the Tools section: the heading resolves
+                    // out of a blur while the section is still entering, so
+                    // the boundary reads as a cross-fade rather than a cut.
+                    // Separate from the parallax below — a scrubbed tween
+                    // rewinds to the values it first captured, so the two must
+                    // not both own the same properties.
+                    gsap.fromTo(
+                        '.work-heading',
+                        { opacity: 0, scale: 0.94, filter: 'blur(16px)' },
+                        {
+                            opacity: 1,
+                            scale: 1,
+                            filter: 'blur(0px)',
+                            ease: 'power2.out',
+                            scrollTrigger: {
+                                trigger: sectionRef.current,
+                                start: 'top 92%',
+                                end: 'top 34%',
+                                scrub: 0.9,
+                            },
+                        }
+                    )
+
                     gsap.fromTo(
                         '.work-heading',
                         { yPercent: 18 },
@@ -108,18 +131,6 @@ function Project() {
                             },
                         }
                     )
-
-                    gsap.from('.work-pin-kicker, .work-pin-count', {
-                        opacity: 0,
-                        y: 18,
-                        duration: 0.8,
-                        stagger: 0.08,
-                        ease: 'power3.out',
-                        scrollTrigger: {
-                            trigger: sectionRef.current,
-                            start: 'top 72%',
-                        },
-                    })
 
                     gsap.utils.toArray('.work-item').forEach((item, i) => {
                         const reveal = gsap.timeline({
@@ -176,13 +187,11 @@ function Project() {
     return (
         <section className='work-main' ref={sectionRef} id='work'>
             <div className='work-pin'>
-                <span className='work-pin-kicker'>Selected case studies</span>
                 <h2 className='work-heading'>Recent works</h2>
-                <span className='work-pin-count'>{projects.length} live builds</span>
             </div>
 
             <div className='work-list'>
-                {projects.map((project, i) => {
+                {projects.map((project) => {
                     const domain = domainOf(project.live)
 
                     return (
@@ -203,12 +212,25 @@ function Project() {
                                             <i />
                                         </span>
                                         <span className='work-browser-url'>
-                                            <i className='work-browser-lock' />
+                                            <svg
+                                                className='work-browser-lock'
+                                                viewBox='0 0 12 16'
+                                                fill='none'
+                                                xmlns='http://www.w3.org/2000/svg'>
+                                                <path
+                                                    d='M3 6V4a3 3 0 0 1 6 0v2'
+                                                    stroke='currentColor'
+                                                    strokeWidth='1.6'
+                                                    strokeLinecap='round' />
+                                                <rect
+                                                    x='0.75'
+                                                    y='6'
+                                                    width='10.5'
+                                                    height='9.25'
+                                                    rx='2'
+                                                    fill='currentColor' />
+                                            </svg>
                                             {domain}
-                                        </span>
-                                        <span className='work-browser-actions'>
-                                            <i />
-                                            <i />
                                         </span>
                                     </div>
                                     <div className='work-browser-screen'>
@@ -232,7 +254,6 @@ function Project() {
                             </div>
 
                             <div className='work-meta'>
-                                <span className='work-index'>{String(i + 1).padStart(2, '0')}</span>
                                 <div className='work-meta-text'>
                                     <span className='work-eyebrow'>{project.type} / {project.year}</span>
                                     <h3 className='work-title'>{project.name}</h3>

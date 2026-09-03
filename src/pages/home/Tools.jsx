@@ -137,7 +137,7 @@ function Tools() {
                     // screen while a scrubbed timeline swaps title + tiles.
                     // Timeline units map onto scroll distance (see `end`).
                     const tl = gsap.timeline({ defaults: { ease: 'power1.inOut' } })
-                    const HOLD = 0.75
+                    const HOLD = 0.38
 
                     const swap = (from, to) => {
                         const at = tl.duration()
@@ -193,7 +193,7 @@ function Tools() {
                         swap(i - 1, i)
                         tl.addLabel(`phase-${i}`)
                     }
-                    tl.to({}, { duration: HOLD * 0.45 }) // linger on the last phase before releasing
+                    tl.to({}, { duration: HOLD * 0.3 }) // brief linger on the last phase before releasing
 
                     // Snap to a fully-formed phase (or the very end) so the
                     // block never rests half-blurred. Scrolling 42% of the way
@@ -220,17 +220,49 @@ function Tools() {
                         // the last phase is shown it releases and scrolls on
                         // up and out like any other content.
                         start: 'center center',
-                        end: `+=${(phases.length - 1) * 95}%`,
+                        end: `+=${(phases.length - 1) * 62}%`,
                         pin: content,
                         anticipatePin: 0.6,
                         scrub: 1.15,
                         snap: {
                             snapTo: snapToPhase,
-                            duration: { min: 0.35, max: 0.8 },
+                            duration: { min: 0.22, max: 0.48 },
                             delay: 0.05,
                             ease: 'power3.out',
                         },
                     })
+
+                    // ---- 3. Exit: after the pin releases, the whole block
+                    // dissolves upward instead of scrolling off as a hard
+                    // rectangle of text — this is what hands the viewport over
+                    // to the Recent-works section.
+                    //
+                    // Targets the <h2>, never `content` itself: content is the
+                    // pinned element, and GSAP owns its transform for the
+                    // duration of the pin — animating y on it fights the pin.
+                    // The h2 is also untouched by both timelines above, which
+                    // only reach the .tools-title / .tools-tile descendants.
+                    if (!reduce) {
+                        gsap.fromTo(
+                            content.querySelector('.tools-heading'),
+                            { opacity: 1, y: 0, filter: 'blur(0px)' },
+                            {
+                                opacity: 0,
+                                y: -70,
+                                filter: 'blur(10px)',
+                                ease: 'power2.in',
+                                immediateRender: false,
+                                scrollTrigger: {
+                                    trigger: content,
+                                    // Begins once the block has cleared the
+                                    // pin and is on its way out of frame.
+                                    start: 'center 34%',
+                                    end: 'center -18%',
+                                    scrub: 0.8,
+                                },
+                            }
+                        )
+                    }
                 }
             )
         }, rootRef)
