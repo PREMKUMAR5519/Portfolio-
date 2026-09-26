@@ -8,10 +8,11 @@ import CaseStudyPlayer from './CaseStudyPlayer'
 import Cta from './Cta'
 import Footer from '../../components/Footer'
 import Navbar from '../../components/Navbar'
+import PageReveal from '../../components/PageReveal'
 
 function Index() {
   return (
-    <>
+    <PageReveal>
       <Navbar />
       <Hero />
       <About />
@@ -31,7 +32,7 @@ function Index() {
         <Cta />
         <Footer />
       </div>
-    </>
+    </PageReveal>
   )
 }
 

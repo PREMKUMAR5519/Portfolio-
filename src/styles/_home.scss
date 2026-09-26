@@ -1,5 +1,57 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
 
+// Page reveal inspired by haoqi.design: a dotted canvas aperture expands
+// from the center while the small black load dash resolves.
+.page-reveal {
+    min-height: 100vh;
+}
+
+.page-reveal-shell {
+    visibility: hidden;
+}
+
+.page-reveal-loader {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    pointer-events: none;
+    will-change: opacity;
+}
+
+.page-reveal-loader__canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.page-reveal-loader__track {
+    position: relative;
+    z-index: 1;
+    width: 140px;
+    height: 6px;
+    overflow: hidden;
+    border-radius: 999px;
+    background: transparent;
+}
+
+.page-reveal-loader__bar {
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: 0%;
+    border-radius: inherit;
+    background: #111111;
+    will-change: width;
+}
+
+[data-page-reveal] {
+    will-change: transform, opacity;
+}
+
 
 //Top-right pill nav
 .pill-nav {
@@ -70,6 +122,15 @@
     padding: 0 24px;
     overflow: hidden;
 
+    &::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        background-image: radial-gradient(circle, rgba(91, 153, 192, 0.18) 0.65px, transparent 1px);
+        background-size: 5px 5px;
+    }
+
     @media (max-width:650px) {
         min-height: 560px;
     }
@@ -83,52 +144,10 @@
     }
 }
 
-// Intro curtain: covers the viewport from first paint so nothing flashes
-// before GSAP takes over; the timeline sweeps it up and display:none's it.
-.hero-curtain {
-    position: fixed;
-    inset: 0;
-    z-index: 999;
-    background: #101010;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 20px;
-}
-
-.hero-curtain-name {
-    font-size: 0.85rem;
-    font-weight: 500;
-    text-transform: uppercase;
-    color: #f4f2ec;
-    // Starts wide + invisible; the timeline tracks it in.
-    letter-spacing: 1.3em;
-    opacity: 0;
-    // Re-centre: tracking adds trailing space after the last letter.
-    padding-left: 0.5em;
-    will-change: letter-spacing, opacity;
-}
-
-// Gradient hairline that draws across beneath the name.
-.hero-curtain-line {
-    width: min(260px, 46vw);
-    height: 1px;
-    background: linear-gradient(90deg, #089e90, #37429c, #c43e6b);
-    transform: scaleX(0);
-    transform-origin: left center;
-    will-change: transform;
-}
-
 @media (prefers-reduced-motion: reduce) {
-    .hero-curtain {
+    .page-reveal-loader {
         display: none;
     }
-}
-
-// SplitText line wrappers (masked by overflow clip parents it creates).
-.hero-title-line {
-    will-change: transform;
 }
 
 .hero-eyebrow {
@@ -153,6 +172,15 @@
     letter-spacing: -0.03em;
     color: $text-color;
     text-wrap: balance;
+}
+
+.hero-title-mask {
+    display: block;
+    overflow: hidden;
+}
+
+.hero-title-mask > span {
+    display: block;
 }
 
 .hero-gradient {
